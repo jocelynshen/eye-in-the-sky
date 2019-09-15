@@ -17,6 +17,7 @@
         android:allowBackup="true"
         android:label="Eye in the Sky"
         android:theme="@style/AppTheme"
+        android:icon="@drawable/ic_launcher"
         android:usesCleartextTraffic="true">
         <activity android:name=".MapActivity"></activity>
         <activity

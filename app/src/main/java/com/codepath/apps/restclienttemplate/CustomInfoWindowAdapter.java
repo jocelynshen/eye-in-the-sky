@@ -30,63 +30,6 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
 
     }
 
-    /**
-     * Grabs the post associated with marker
-     *
-     * @param marker marker clicked on by user
-     * @param v      view
-     */
-//    public void getPostObject(final Marker marker, final View v) {
-//        final ImageView image = v.findViewById(R.id.imageMarker);
-//        if (marker.getSnippet().length() > 0) {
-//            if (marker.getSnippet().startsWith("*")) {
-//                snippet.setVisibility(View.VISIBLE);
-//                snippet.setText(marker.getSnippet());
-//            } else if (marker.getSnippet().startsWith("tornado")){
-//                snippet.setVisibility(View.VISIBLE);
-//                snippet.setText("Tornado vortex signature: \nIndicates likely presence of a forming tornado");
-//            }
-//            else {
-//                snippet.setVisibility(View.INVISIBLE);
-//                image.setVisibility(View.VISIBLE);
-//                Glide.with(mContext).load(marker.getSnippet()).placeholder(R.drawable.ic_add_photo).listener(new RequestListener<Drawable>() {
-//                    @Override
-//                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-//                        return false;
-//                    }
-//
-//                    @Override
-//                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-//                        if (marker.getSnippet().equals(v.getTag())) {
-//                            return false;
-//                        }
-//
-//                        mHandler.post(new Runnable() {
-//                            @Override
-//                            public void run() {
-//                                v.setTag(marker.getSnippet());
-//                                System.out.println(marker.getSnippet());
-//                                marker.showInfoWindow();
-//                            }
-//                        });
-//
-//                        return false;
-//                    }
-//                }).into(image);
-//            }
-//        } else {
-//            image.setVisibility(View.INVISIBLE);
-//        }
-//        String title = marker.getTitle();
-//        System.out.println(title);
-//        TextView tvTitle = v.findViewById(R.id.eventTitle);
-//        if (title != null && title.length() > 0) {
-//            tvTitle.setText(title);
-//        } else {
-//            tvTitle.setVisibility(View.INVISIBLE);
-//        }
-//    }
-
     @Override
     public View getInfoWindow(Marker marker) {
         return null;

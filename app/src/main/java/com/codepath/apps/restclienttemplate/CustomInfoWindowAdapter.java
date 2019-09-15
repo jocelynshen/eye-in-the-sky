@@ -38,35 +38,41 @@ public class CustomInfoWindowAdapter implements GoogleMap.InfoWindowAdapter {
     public void getPostObject(final Marker marker, final View v) {
         final ImageView image = v.findViewById(R.id.imageMarker);
         if (marker.getSnippet().length() > 0) {
-            image.setVisibility(View.VISIBLE);
-            Glide.with(mContext).load(marker.getSnippet()).placeholder(R.drawable.ic_add_photo).listener(new RequestListener<Drawable>() {
-                @Override
-                public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
-                    return false;
-                }
-
-                @Override
-                public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
-                    if (marker.getSnippet().equals(v.getTag())) {
+            if (marker.getSnippet().startsWith("*")) {
+                TextView snippet = v.findViewById(R.id.snip);
+                snippet.setText(marker.getSnippet());
+            } else {
+                image.setVisibility(View.VISIBLE);
+                Glide.with(mContext).load(marker.getSnippet()).placeholder(R.drawable.ic_add_photo).listener(new RequestListener<Drawable>() {
+                    @Override
+                    public boolean onLoadFailed(@Nullable GlideException e, Object model, Target<Drawable> target, boolean isFirstResource) {
                         return false;
                     }
 
-                    mHandler.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            v.setTag(marker.getSnippet());
-                            System.out.println(marker.getSnippet());
-                            marker.showInfoWindow();
+                    @Override
+                    public boolean onResourceReady(Drawable resource, Object model, Target<Drawable> target, DataSource dataSource, boolean isFirstResource) {
+                        if (marker.getSnippet().equals(v.getTag())) {
+                            return false;
                         }
-                    });
 
-                    return false;
-                }
-            }).into(image);
+                        mHandler.post(new Runnable() {
+                            @Override
+                            public void run() {
+                                v.setTag(marker.getSnippet());
+                                System.out.println(marker.getSnippet());
+                                marker.showInfoWindow();
+                            }
+                        });
+
+                        return false;
+                    }
+                }).into(image);
+            }
         } else {
             image.setVisibility(View.INVISIBLE);
         }
         String title = marker.getTitle();
+        System.out.println(title);
         TextView tvTitle = v.findViewById(R.id.eventTitle);
         if (title != null && title.length() > 0) {
             tvTitle.setText(title);

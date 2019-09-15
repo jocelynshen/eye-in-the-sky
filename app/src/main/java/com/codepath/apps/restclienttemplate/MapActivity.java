@@ -64,6 +64,7 @@ import com.parse.ParseFile;
 import com.parse.ParseGeoPoint;
 import com.parse.SaveCallback;
 
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -553,6 +554,37 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                     JsonObject jsonObject = parser.parse(fixedString).getAsJsonObject();
                     JsonElement jsonObjects = jsonObject.get("result");
                     final JsonArray jsonArray = jsonObjects.getAsJsonArray();
+
+
+                    String sensorUrl = "https://ml2twr7hpb.execute-api.us-east-2.amazonaws.com/beta/data?deviceID=270056000451353431383736&table=sensor-data&min=1568521263";
+                    URL sensorObj = new URL(sensorUrl);
+                    HttpURLConnection sensorCon = (HttpURLConnection) sensorObj.openConnection();
+                    BufferedReader input = new BufferedReader(new InputStreamReader(sensorCon.getInputStream()));
+                    String inputLineS;
+                    StringBuffer responseS = new StringBuffer();
+                    while ((inputLineS = input.readLine()) != null) {
+                        responseS.append(inputLineS);
+                    } input.close();
+                    final ArrayList<Double[]> sensorData = new ArrayList<>();
+                    String responseStringS = responseS.toString();
+                    JSONArray responseArray = new JSONArray(responseStringS);
+                    System.out.println(responseArray);
+                    for (int i = 0; i < responseArray.length(); i++) {
+                        JSONObject object = (JSONObject) (responseArray.get(i));
+                        Double latitude = Double.parseDouble(object.get("latitude").toString());
+                        Double longitude = Double.parseDouble(object.get("longitude").toString());
+                        Double pressure = Double.parseDouble(object.get("pressure").toString());
+                        Double humidity = Double.parseDouble(object.get("humidity").toString());
+                        Double temperature = Double.parseDouble(object.get("temperature").toString());
+                        Double[] temp = new Double[5];
+                        temp[0] = latitude;
+                        temp[1] = longitude;
+                        temp[2] = pressure;
+                        temp[3] = humidity;
+                        temp[4] = temperature;
+                        sensorData.add(temp);
+                    }
+
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
@@ -562,9 +594,16 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
                                 tornadoList.add(newTornado);
                                 createMarkerTornado(new LatLng(newTornado.latitude, newTornado.longitude), "Tornado");
                             }
+                            for (int i = 0; i < sensorData.size(); i++) {
+                                Double[] d = sensorData.get(i);
+                                createMarkerSensor(d);
+                            }
                             mProgressBar.setVisibility(ProgressBar.INVISIBLE);
+
                         }
                     });
+
+
 
                 } catch(Exception e) {
                     System.out.println(e);
@@ -573,6 +612,17 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         });
         thread.start();
     };
+
+    public void createMarkerSensor(Double[] data) {
+        LatLng position = new LatLng(data[0], data[1]);
+        String s = "*Pressure: " + data[2] + "\n*Humidity: " + data[3] + "\n*Temperature(F): " + data[4];
+        Marker m = mMap.addMarker(new MarkerOptions().position(position)
+                                    .title("Sensor Data")
+                                    .snippet(s)
+                                    .icon(getMarkers("Sensor")));
+    }
+
+
 
     private final TextWatcher mTextEditorWatcher = new TextWatcher() {
         /*
@@ -607,6 +657,8 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
             descriptor = getResources().getDrawable(R.drawable.tornado);
         }else if (type.equals("Power outage")) {
             descriptor = getResources().getDrawable(R.drawable.powerline);
+        } else if (type.equals("Sensor")) {
+            descriptor = getResources().getDrawable(R.drawable.bluedot);
         }
         else {
             descriptor = getResources().getDrawable(R.drawable.traffic);

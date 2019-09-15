@@ -699,7 +699,6 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(position)
                 .title(getAddress(this, position))
-                .snippet(null)
                 .icon(getMarkers(type)));
         return marker;
     }

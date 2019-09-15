@@ -699,6 +699,7 @@ public class MapActivity extends AppCompatActivity implements OnMapReadyCallback
         Marker marker = mMap.addMarker(new MarkerOptions()
                 .position(position)
                 .title(getAddress(this, position))
+                .snippet("tornado")
                 .icon(getMarkers(type)));
         return marker;
     }
